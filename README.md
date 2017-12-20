@@ -18,7 +18,8 @@ const World = require('pixi-camera');
 // its extend from PIXI.Container
 const world1 = new World({
   width: 300,
-  height: 300 // frustrum camera size
+  height: 300, // frustrum camera size
+  culling: false // disable camera culling if needed
 });
 app.stage.addChild(world1); // add this world to anywhere in the scene graph
 

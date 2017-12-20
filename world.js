@@ -10,9 +10,9 @@ class World extends PIXI.Container {
    * @param {PIXI.Container} config.container
    * @param {Number} config.width
    * @param {Number} config.height
-   * @param {Function} config.onChange
+   * @param {Boolean=true} config.culling
    */
-  constructor(config = {}) {
+  constructor(config = { culling: true }) {
     super();
 
     this.config = config;
@@ -28,7 +28,9 @@ class World extends PIXI.Container {
     this.filters = [clip];
     this.filterArea = new PIXI.Rectangle(0, 0, this.config.width, this.config.height);
 
-    this.tree = rbush();
+    if (this.config.culling) {
+      this.tree = rbush();
+    }
   }
 
   onCameraChange() {
@@ -101,8 +103,9 @@ class World extends PIXI.Container {
    * @param {PIXI.DisplayObject} child
    */
   insertToTree(child) {
+    if (!this.config.culling) return;
+
     let bound = child.getBounds();
-    
     child.__culling = {
       minX: bound.left,
       minY: bound.top,
@@ -118,6 +121,8 @@ class World extends PIXI.Container {
    * @param {PIXI.DisplayObject} child
    */
   removeFromTree(child) {
+    if (!this.config.culling) return;
+
     this.tree.remove(child.__culling);
     child.__culling = undefined;
   }
@@ -148,6 +153,8 @@ class World extends PIXI.Container {
     // update filter area
     if (this.filterArea.x !== this.x) this.filterArea.x = this.x;
     if (this.filterArea.y !== this.y) this.filterArea.y = this.y;
+    
+    if (!this.config.culling) return;
     
     if (this.camera.frustrumChanged) {
       this.camera.frustrumChanged = false;
