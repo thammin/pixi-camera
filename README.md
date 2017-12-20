@@ -22,6 +22,12 @@ const world1 = new World({
 });
 app.stage.addChild(world1); // add this world to anywhere in the scene graph
 
+// we can add anything as usual to our wolrd1
+const box = new PIXI.Graphics();
+box.beginFill(Math.floor(Math.random() * 0xFFFFFF));
+box.drawRect(10, 10, 50, 50);
+world1.addChild(box);
+
 const camera = world1.camera; // this is our world1's camera
 camera.position.set(100, 100); // set the camera to position x:100 y:100
 camera.scale.set(1.5, 1.5); // or any other pixi.js properties
