@@ -15,9 +15,9 @@ class World extends PIXI.Container {
   constructor(config) {
     super();
 
-    this.config = Object.assign({}, config, {
+    this.config = Object.assign({
       culling: true
-    });
+    }, config);
     this.camera = new Camera(this.config.width, this.config.height);
     this.camera.on('frustrumChanged', camera => this.onCameraChange(camera));
   
