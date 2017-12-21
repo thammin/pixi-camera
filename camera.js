@@ -1,24 +1,26 @@
+const EventEmitter = require('eventemitter3');
 const PIXI = require('pixi.js');
 
 /**
  * Camera
  */
-class Camera {
+class Camera extends EventEmitter {
   /**
-   * @param {PIXI.Container} config.container
-   * @param {Number} config.width
-   * @param {Number} config.height
-   * @param {Function} config.onChange
+   * @param {Number} width
+   * @param {Number} height
    */
-  constructor(config = {}) {
-    this.config = config;
+  constructor(width, height) {
+    super();
+
+    this.width = width;
+    this.height = height;
 
     this.position = new PIXI.ObservablePoint(this.update, this, 0, 0);
     this.scale = new PIXI.ObservablePoint(this.update, this, 1, 1);
     this.pivot = new PIXI.ObservablePoint(this.update, this, 0, 0);
     this.skew = new PIXI.ObservablePoint(this.updateSkew, this, 0, 0);
     
-    this.frustrum = new PIXI.Rectangle(0, 0, this.config.width, this.config.height);
+    this.frustrum = new PIXI.Rectangle(0, 0, this.width, this.height);
     this.frustrumCenter = new PIXI.Point();
     this.frustrumChanged = true;
 
@@ -27,6 +29,8 @@ class Camera {
     this._sx = 0; // sin rotation + skewY;
     this._cy = 0; // cos rotation + Math.PI/2 - skewX;
     this._sy = 1; // sin rotation + Math.PI/2 - skewX;
+
+    this.on('changeSize', this.changeSize);
   }
 
   updateSkew() {
@@ -41,10 +45,10 @@ class Camera {
   update() {
     this.frustrum.x = this.position.x * this.scale.x + this.pivot.x;
     this.frustrum.y = this.position.y * this.scale.y + this.pivot.y;
-    this.frustrum.width = this.config.width * this.scale.x;
-    this.frustrum.height = this.config.height * this.scale.y;
+    this.frustrum.width = this.width * this.scale.x;
+    this.frustrum.height = this.height * this.scale.y;
     this.frustrumChanged = true;
-    this.config.onChange();
+    this.emit('frustrumChanged', this);
   }
 
   get rotation() {
@@ -54,6 +58,17 @@ class Camera {
   set rotation(value) {
     this._rotation = value;
     this.updateSkew();
+  }
+
+  /**
+   * change frustrum size
+   * @param {Number} width
+   * @param {Number} height
+   */
+  changeSize(width, height) {
+    this.width = width;
+    this.height = height;
+    this.update();
   }
 
   /**

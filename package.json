@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "budo example.js -l -o",
+    "start": "budo example.js -l -o --force-default-index",
     "ghpage": "browserify example.js | babili | indexhtmlify > index.html"
   },
   "author": "Paul Young <thammin@live.co.uk> (https://github.com/thammin)",
   "license": "MIT",
   "dependencies": {
+    "eventemitter3": "^3.0.0",
     "pixi.js": "^4.6.2",
     "rbush": "^2.0.1"
   },

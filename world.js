@@ -12,13 +12,14 @@ class World extends PIXI.Container {
    * @param {Number} config.height
    * @param {Boolean=true} config.culling
    */
-  constructor(config = { culling: true }) {
+  constructor(config) {
     super();
 
-    this.config = config;
-    this.camera = new Camera(Object.assign({}, this.config, {
-      onChange: () => this.onCameraChange()
-    }));
+    this.config = Object.assign({}, config, {
+      culling: true
+    });
+    this.camera = new Camera(this.config.width, this.config.height);
+    this.camera.on('frustrumChanged', camera => this.onCameraChange(camera));
   
     this.worldContainer = new PIXI.Container();
     super.addChild(this.worldContainer);
@@ -33,17 +34,17 @@ class World extends PIXI.Container {
     }
   }
 
-  onCameraChange() {
+  onCameraChange(camera) {
     this.worldContainer.setTransform(
-      -this.camera.position.x,
-      -this.camera.position.y,
-      1 / this.camera.scale.x,
-      1 / this.camera.scale.y,
-      -this.camera.rotation,
-      -this.camera.skew.x,
-      -this.camera.skew.y,
-      this.camera.pivot.x,
-      this.camera.pivot.y
+      -camera.position.x,
+      -camera.position.y,
+      1 / camera.scale.x,
+      1 / camera.scale.y,
+      -camera.rotation,
+      -camera.skew.x,
+      -camera.skew.y,
+      camera.pivot.x,
+      camera.pivot.y
     );
   }
 
@@ -144,6 +145,18 @@ class World extends PIXI.Container {
       lastPosX - (origin.x - lastPivX) / scaleX,
       lastPosY - (origin.y - lastPivY) / scaleY
     );
+  }
+
+  /**
+   * set camera's size
+   * useful if we need to adjust the size after camera is initialized
+   * @param {Number} width
+   * @param {Number} height
+   */
+  setCameraSize(width, height) {
+    this.config.width = this.filterArea.width = width;
+    this.config.height = this.filterArea.height = height;
+    this.camera.emit('changeSize', width, height);
   }
 
   /**
