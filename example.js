@@ -102,12 +102,17 @@ app.view.addEventListener('wheel', function(e) {
 
 let box;
 connector.listen(world, 'tap', function(e) {
-  box = box || new PIXI.Graphics();
-  box.clear();
-  box.beginFill(0xFFFFFF, 0.5);
-  box.drawRect(10, 10, 100, 100);
-  box.position.set(50);
-  box.pivot.set(50);
-  box.scale.set(2);
-  world.addChild(box);
+  if (box) {
+    box.scale.set(1);
+    world.updateCullingBound(box);
+  } else {
+    box = new PIXI.Graphics();
+    box.clear();
+    box.beginFill(0xFFFFFF, 0.5);
+    box.drawRect(10, 10, 100, 100);
+    box.position.set(50);
+    box.pivot.set(50);
+    box.scale.set(2);
+    world.addChild(box);
+  }
 });

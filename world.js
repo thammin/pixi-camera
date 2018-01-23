@@ -122,6 +122,17 @@ class World extends PIXI.Container {
   }
 
   /**
+   * recache child culling bounds
+   * @param {PIXI.DisplayObject} child
+   */
+  updateCullingBound(child) {
+    if (!this.config.culling) return;
+    
+    this.removeFromTree(child);
+    this.insertToTree(child);
+  }
+
+  /**
    * remove instance from tree
    * @param {PIXI.DisplayObject} child
    */
