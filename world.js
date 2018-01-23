@@ -106,7 +106,7 @@ class World extends PIXI.Container {
   insertToTree(child) {
     if (!this.config.culling) return;
 
-    let bound = child.getBounds();
+    let bound = child.getLocalBounds();
     child.__culling = {
       minX: bound.left,
       minY: bound.top,

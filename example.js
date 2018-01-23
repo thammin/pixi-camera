@@ -100,3 +100,11 @@ app.view.addEventListener('wheel', function(e) {
   }, 250);
 });
 
+let box;
+connector.listen(world, 'tap', function(e) {
+  box = box || new PIXI.Graphics();
+  box.clear();
+  box.beginFill(0xFFFFFF, 0.5);
+  box.drawRect(10, 10, 100, 100);
+  world.addChild(box);
+});
