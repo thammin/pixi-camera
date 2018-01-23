@@ -52,12 +52,14 @@ class World extends PIXI.Container {
    * override methods
    */
   addChild(child) {
+    const result = this.worldContainer.addChild(child);
     this.insertToTree(child);
-    return this.worldContainer.addChild(child);
+    return result;
   }
   addChildAt(child, index) {
+    const result = this.worldContainer.addChildAt(child, index);
     this.insertToTree(child);
-    return this.worldContainer.addChildAt(child, index);
+    return result;
   }
   swapChildren(child, child2) {
     return this.worldContainer.swapChildren(child, child2);
@@ -106,12 +108,14 @@ class World extends PIXI.Container {
   insertToTree(child) {
     if (!this.config.culling) return;
 
-    let bound = child.getLocalBounds();
+    let bound = child.getBounds();
+    let parentPos = this.worldContainer.getGlobalPosition();
+    
     child.__culling = {
-      minX: bound.left,
-      minY: bound.top,
-      maxX: bound.right,
-      maxY: bound.bottom,
+      minX: bound.left - parentPos.x,
+      minY: bound.top - parentPos.y,
+      maxX: bound.right - parentPos.x,
+      maxY: bound.bottom - parentPos.y,
       instance: child
     };
     this.tree.insert(child.__culling);

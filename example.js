@@ -106,5 +106,8 @@ connector.listen(world, 'tap', function(e) {
   box.clear();
   box.beginFill(0xFFFFFF, 0.5);
   box.drawRect(10, 10, 100, 100);
+  box.position.set(50);
+  box.pivot.set(50);
+  box.scale.set(2);
   world.addChild(box);
 });
