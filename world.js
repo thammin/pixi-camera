@@ -84,7 +84,7 @@ class World extends PIXI.Container {
   }
   removeChildren(beginIndex = 0, endIndex) {
     let removedChildren = this.worldContainer.removeChildren(beginIndex, endIndex);
-    removedChildren.forEach(child => removeFromTree(child));
+    removedChildren.forEach(child => this.removeFromTree(child));
     return removedChildren;
   }
 
