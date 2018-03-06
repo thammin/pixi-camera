@@ -22,18 +22,18 @@ const world = new World({
 world.position.set(100, 100);
 app.stage.addChild(world);
 
+world.camera.pivot.set(100, 0);
+
 // insert some squares into our world
-for (var i = 0; i < 800; i++) {
+for (var i = 0; i < (300 / 10) * (300 / 10); i++) {
   const box = new PIXI.Graphics();
   box.beginFill(Math.floor(Math.random() * 0xFFFFFF));
-  box.drawRect((i % 20) * 40 + 10, Math.floor(i / 20) * 40 + 10, 30, 30);
+  box.drawRect((i % (300 / 10)) * 10, Math.floor(i / (300 / 10)) * 10, 10, 10);
   world.addChild(box);
 }
 
 console.log(`scene: ${app.renderer.width}x${app.renderer.height}`);
 console.log(`world: ${world.width}x${world.height}`);
-
-//world.camera.position.set(100, 0);
 
 // hit area for our world for pixi-hammer
 let rect = new PIXI.Graphics();
@@ -61,6 +61,8 @@ connector.listen(world, 'panmove', {
     panstart.origin.x - e.deltaX,
     panstart.origin.y - e.deltaY
   );
+
+  debugBoxCulling();
 });
 
 const t = 800;
@@ -103,16 +105,30 @@ app.view.addEventListener('wheel', function(e) {
 let box;
 connector.listen(world, 'tap', function(e) {
   if (box) {
-    box.scale.set(1);
+    box.scale.set(2);
     world.updateCullingBound(box);
   } else {
     box = new PIXI.Graphics();
+    box.name = 'box';
     box.clear();
-    box.beginFill(0xFFFFFF, 0.5);
-    box.drawRect(10, 10, 100, 100);
-    box.position.set(50);
+    box.beginFill(0xFFFFFF, 0.7);
+    box.drawRect(100, 100, 100, 100);
+    box.position.set(70);
     box.pivot.set(50);
-    box.scale.set(2);
+    box.scale.set(1.5);
     world.addChild(box);
+    debugBoxCulling();
   }
 });
+
+// debug info for box culling;
+const debug = document.createElement('div');
+debug.style.position = 'absolute';
+debug.style.top = debug.style.left = '50px';
+debug.style.color = 'white';
+document.body.appendChild(debug);
+function debugBoxCulling() {
+  if (box) {
+    debug.innerHTML = box.visible;  
+  }
+}

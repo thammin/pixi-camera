@@ -108,14 +108,16 @@ class World extends PIXI.Container {
   insertToTree(child) {
     if (!this.config.culling) return;
 
-    let bound = child.getBounds();
-    let parentPos = this.worldContainer.getGlobalPosition();
+    const { camera, worldContainer } = this;
+    const bound = child.getBounds();
+    const local = child.getLocalBounds();
+    const min = worldContainer.toLocal(bound);
     
     child.__culling = {
-      minX: bound.left - parentPos.x,
-      minY: bound.top - parentPos.y,
-      maxX: bound.right - parentPos.x,
-      maxY: bound.bottom - parentPos.y,
+      minX: min.x,
+      minY: min.y,
+      maxX: min.x + local.width * child.scale.x,
+      maxY: min.y + local.height * child.scale.y,
       instance: child
     };
     this.tree.insert(child.__culling);
