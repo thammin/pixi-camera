@@ -177,9 +177,9 @@ class World extends PIXI.Container {
   }
 
   /**
-   * override
+   * shared render method
    */
-  _renderWebGL() {
+  __render() {
     // update filter area
     if (this.filterArea.x !== this.x) this.filterArea.x = this.x;
     if (this.filterArea.y !== this.y) this.filterArea.y = this.y;
@@ -203,6 +203,20 @@ class World extends PIXI.Container {
         info.instance.visible = true;
       });
     }
+  }
+
+  /**
+   * override
+   */
+  _renderWebGL() {
+    this.__render();
+  }
+
+  /**
+   * override
+   */
+  _renderCanvas() {
+    this.__render();
   }
 }
 
